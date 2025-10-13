@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Js module links. -->
     <script type="module" src="common.mjs"></script>
-    <script type="module" src="web.mjs"></script>]
-
+    <script type="module" src="web.mjs"></script>
+    
     <title>Project Days Calender</title>
-
-    <div>
+</head>
+<body>
+     <div>
       <h1>Project Days Calender</h1>
       <button id="prev">Previous</button>
       <button id="next">Next</button>
@@ -17,11 +20,7 @@
      <select id="yearSelect"></select>
     </div>
 
-    <div id="calender"></div>
+    <div id="calendar" role="grid" aria-label="Monthly calender view"></div>
 
-    
-</head>
-<body>
-    
 </body>
 </html>
