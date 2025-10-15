@@ -1,10 +1,13 @@
 // Import helper functions and commemorative days data
-import { getCommemorativeDate, formatDate } from "./common.mjs";
+import { monthMap, getCommemorativeDate, formatDate } from "./common.mjs";
 import commemorative from "./days.json" with { type: "json" };
 
 // Wait until DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
 
+  const monthNames = Object.keys(monthMap);
+  // monthMap keeps chronological order because its literal is declared that way
+  
   // Grab references to key HTML elements
   const calendarContainer = document.getElementById("calendar");
   const monthYearLabel = document.getElementById("monthYear");
@@ -14,11 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthSelect = document.getElementById("monthSelect");
   const yearSelect = document.getElementById("yearSelect");
 
-  // Month names array
-  const monthNames = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
+ 
 
   // Current date for initialization
   let now = new Date();
