@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Js module links. -->
-    <script type="module" src="common.mjs"></script>
-    <script type="module" src="web.mjs"></script>
-
-    <title>Project Days Calendar</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Days Calendar</title>
 </head>
 <body>
-     <div>
-      <h1>Project Days Calender</h1>
-      <button id="prev">Previous</button>
-      <button id="next">Next</button>
-     <!-- this will allow us o render the calender Dynamically. -->
-     <select id="monthSelect"></select>
-     <select id="yearSelect"></select>
-    </div>
+  <h1>Project Days Calendar</h1>
 
-    <div id="calendar" role="grid" aria-label="Monthly calendar view"></div>
+  <div id="calendar-header">
+    <button id="prev">Previous</button>
+    <span id="monthYear"></span>
+    <button id="next">Next</button>
+  </div>
 
+  <div id="calendar" role="grid" aria-label="Monthly calendar view"></div>
+
+  <select id="monthSelect"></select>
+  <select id="yearSelect"></select>
+
+  <script type="module" src="web.mjs"></script>
 </body>
 </html>
