@@ -51,11 +51,14 @@
     const firstDay = new Date(year, month, 1).getDay();
     return (firstDay + 6) % 7; // Monday=0
   }
-
+// Main function to render the calendar
   function renderCalendar(month, year){
-    calendarContainer.innerHTML = "";
-    monthYearLabel.textContent = `${monthNames[month]} ${year}`;
+    // Main function to render the calendar
+    calendarContainer.innerHTML = ""; // Clear previous calendar
 
+    // Update month-year label
+    monthYearLabel.textContent = `${monthNames[month]} ${year}`;
+    //create table for calendar
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
@@ -68,7 +71,7 @@
     });
     thead.appendChild(headRow);
     table.appendChild(thead);
-
+ //table body: days
     const tbody = document.createElement("tbody");
     const daysInMonth = new Date(year, month+1, 0).getDate();
     let firstDay = leadingEmptyCount(month, year);
@@ -106,7 +109,8 @@
 
     table.appendChild(tbody);
     calendarContainer.appendChild(table);
-
+ 
+    //update dropdown selections
     monthSelect.value = month;
     yearSelect.value = year;
   }
