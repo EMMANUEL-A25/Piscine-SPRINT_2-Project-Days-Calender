@@ -1,107 +1,134 @@
- //import { getCommemorativeDate, formatDate } from "./common.mjs";
-//import commemorative from "./days.json" assert { type: "json" };
+// Import helper functions and commemorative days data
+import { getCommemorativeDate, formatDate } from "./common.mjs";
+import commemorative from "./days.json" with { type: "json" };
 
-//waiting until the DOM is loaded full loaded before running any script
- document.addEventListener("DOMContentLoaded", () => {
-    //grabbing references to the HTML elements
+// Wait until DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Grab references to key HTML elements
   const calendarContainer = document.getElementById("calendar");
   const monthYearLabel = document.getElementById("monthYear");
   const prevBtn = document.getElementById("prev");
   const nextBtn = document.getElementById("next");
+  const todayBtn = document.getElementById("today");
   const monthSelect = document.getElementById("monthSelect");
   const yearSelect = document.getElementById("yearSelect");
 
+  // Month names array
   const monthNames = [
     "January","February","March","April","May","June",
     "July","August","September","October","November","December"
   ];
 
-  //get current date to initialize calender
+  // Current date for initialization
   let now = new Date();
   let currentMonth = now.getMonth();
   let currentYear = now.getFullYear();
 
-  // Populate month/year selects
-  monthNames.forEach((m,i)=>{
+  // Populate month dropdown
+  monthNames.forEach((m, i) => {
     const opt = document.createElement("option");
-    opt.value = i; //month index(0-11) javascript index start from zero
-    opt.textContent = m; //select current month
-    if(i === currentMonth) opt.selected = true;
+    opt.value = i;
+    opt.textContent = m;
+    if (i === currentMonth) opt.selected = true;
     monthSelect.appendChild(opt);
   });
-  //populate year dropdown(1900-2100)
-  for(let y=1900; y<=2100; y++){
+
+  // Populate year dropdown (1900–2100)
+  for (let y = 1900; y <= 2100; y++) {
     const opt = document.createElement("option");
     opt.value = y;
     opt.textContent = y;
-    if(y === currentYear) opt.selected = true; //select current year
+    if (y === currentYear) opt.selected = true;
     yearSelect.appendChild(opt);
   }
 
-  //  // Function to check if a given date matches a commemorative day from JSON
-  function isCommemorativeDay(date){
-    if(date.getMonth() === 9 && date.getDate() === 8){
-      return { name: "Ada Lovelace Day" };
+  // Returns an array of all commemorative entries for a given date
+  function getCommemorativeDays(date, year) {
+    const matched = [];
+    for (const entry of commemorative) {
+      const commDate = getCommemorativeDate(entry, year);
+      if (commDate && formatDate(commDate) === formatDate(date)) {
+        matched.push(entry);
+      }
     }
-    return null;
+    return matched; // empty array if none match
   }
-// Helper function to determine how many blank cells to insert at the start of the month
-  // Since our week starts on Monday, we adjust Sunday (0) to come at the end
-  function leadingEmptyCount(month, year){
+
+  // Determine how many blank cells at the start of the month
+  function leadingEmptyCount(month, year) {
     const firstDay = new Date(year, month, 1).getDay();
-    return (firstDay + 6) % 7; // Monday=0
+    return (firstDay + 6) % 7; // Monday = 0
   }
-// Main function to render the calendar
-  function renderCalendar(month, year){
-    // Main function to render the calendar
+
+  // Render calendar for given month/year
+  function renderCalendar(month, year) {
     calendarContainer.innerHTML = ""; // Clear previous calendar
 
-    // Update month-year label
+    // Update month/year label
     monthYearLabel.textContent = `${monthNames[month]} ${year}`;
-    //create table for calendar
+
+    // Create table and header
     const table = document.createElement("table");
+    table.style.borderCollapse = "collapse"; // prevent double borders
+
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d=>{
+    ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d => {
       const th = document.createElement("th");
-      th.setAttribute("width","40");
-      th.setAttribute("height","30");
       th.textContent = d;
+      th.style.border = "1px solid #333";
+      th.style.width = "50px";
+      th.style.height = "30px";
+      th.style.textAlign = "center";
       headRow.appendChild(th);
     });
     thead.appendChild(headRow);
     table.appendChild(thead);
- //table body: days
+
+    // Table body: days
     const tbody = document.createElement("tbody");
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    let firstDay = leadingEmptyCount(month, year);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = leadingEmptyCount(month, year);
     let day = 1;
 
-    while(day <= daysInMonth){
+    while (day <= daysInMonth) {
       const tr = document.createElement("tr");
-      for(let col=0; col<7; col++){
+      for (let col = 0; col < 7; col++) {
         const td = document.createElement("td");
-        td.setAttribute("width","40");
-        td.setAttribute("height","40");
-        td.style.textAlign = "center";
-        td.style.verticalAlign = "middle";
 
-        if(day === 1 && col < firstDay){
-          // empty cell
-        } else if(day > daysInMonth){
-          // empty cell
+        // Rectangle box styling
+        td.style.border = "1px solid #333";
+        td.style.width = "50px";
+        td.style.height = "50px";
+        td.style.padding = "4px";
+        td.style.textAlign = "center";
+        td.style.verticalAlign = "top";
+        td.style.boxSizing = "border-box";
+
+        if (day === 1 && col < firstDay) {
+          td.textContent = ""; // empty before first day
+        } else if (day > daysInMonth) {
+          td.textContent = ""; // empty after last day
         } else {
           const date = new Date(year, month, day);
-          td.textContent = day;
+          const events = getCommemorativeDays(date, year);
 
-          const comm = isCommemorativeDay(date);
-          if(comm){
-            td.textContent += " - " + comm.name;
-            td.title = comm.name;
+          if (events.length > 0) {
+            td.style.backgroundColor = "#ffecb3"; // highlight cell
+            td.style.cursor = "pointer";
+            td.title = events.map(e => e.name).join(", ");
+            td.addEventListener("click", () => window.open(events[0].descriptionURL, "_blank"));
+
+            td.innerHTML = `<div>${day}</div>` +
+                           events.map(e => `<div>${e.name}</div>`).join("");
+          } else {
+            td.textContent = day;
           }
 
           day++;
         }
+
         tr.appendChild(td);
       }
       tbody.appendChild(tr);
@@ -109,27 +136,45 @@
 
     table.appendChild(tbody);
     calendarContainer.appendChild(table);
- 
-    //update dropdown selections
+
+    // Update dropdowns
     monthSelect.value = month;
     yearSelect.value = year;
   }
 
   // Event listeners
-  monthSelect.addEventListener("change", ()=>{
-    currentMonth = parseInt(monthSelect.value,10);
+  monthSelect.addEventListener("change", () => {
+    currentMonth = parseInt(monthSelect.value, 10);
     renderCalendar(currentMonth, currentYear);
   });
-  yearSelect.addEventListener("change", ()=>{
-    currentYear = parseInt(yearSelect.value,10);
+
+  yearSelect.addEventListener("change", () => {
+    currentYear = parseInt(yearSelect.value, 10);
     renderCalendar(currentMonth, currentYear);
   });
-  prevBtn.addEventListener("click", ()=>{
-    currentMonth--; if(currentMonth < 0){ currentMonth = 11; currentYear--; }
+
+  prevBtn.addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
     renderCalendar(currentMonth, currentYear);
   });
-  nextBtn.addEventListener("click", ()=>{
-    currentMonth++; if(currentMonth > 11){ currentMonth = 0; currentYear++; }
+
+  nextBtn.addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar(currentMonth, currentYear);
+  });
+
+  todayBtn.addEventListener("click", () => {
+    const now = new Date();
+    currentMonth = now.getMonth();
+    currentYear = now.getFullYear();
     renderCalendar(currentMonth, currentYear);
   });
 
