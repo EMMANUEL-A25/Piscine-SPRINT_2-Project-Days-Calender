@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const monthNames = Object.keys(monthMap);
   // monthMap keeps chronological order because its literal is declared that way
-  
   // Grab references to key HTML elements
   const calendarContainer = document.getElementById("calendar");
   const monthYearLabel = document.getElementById("monthYear");
@@ -71,6 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const table = document.createElement("table");
     table.style.borderCollapse = "collapse"; // prevent double borders
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
     ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d => {
@@ -111,10 +113,22 @@ document.addEventListener("DOMContentLoaded", () => {
           td.textContent = ""; // empty after last day
         } else {
           const date = new Date(year, month, day);
+          date.setHours(0, 0, 0, 0);
+
+          const isToday = date.getTime() === today.getTime();
+          if (isToday) {
+            td.style.outline = "2px solid #1976d2";
+            td.style.backgroundColor = "#e3f2fd";
+          }
+
           const events = getCommemorativeDays(date, year);
 
           if (events.length > 0) {
-            td.style.backgroundColor = "#ffecb3"; // highlight cell
+            if (isToday) {
+              td.style.boxShadow = "inset 0 0 0 2px #ffb300"; 
+            } else {
+              td.style.backgroundColor = "#ffecb3";
+            }
             td.style.cursor = "pointer";
             td.title = events.map(e => e.name).join(", ");
             td.addEventListener("click", () => window.open(events[0].descriptionURL, "_blank"));
