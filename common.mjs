@@ -27,9 +27,9 @@ export function getLastWeekday(year, monthIndex, weekdayIndex){
 export function getCommemorativeDate(entry, year){
   const monthIndex = monthMap[entry.monthName];
   const weekdayIndex = weekdayMap[entry.dayName];
-  const occurrence = entry.occurence; // ✅ match JSON
-  if(occurrence==="last") return getLastWeekday(year, monthIndex, weekdayIndex);
-  const nth = occurrenceMap[occurrence];
+  const occurence = entry.occurence; //single "r" otherwise code wont work
+  if(occurence==="last") return getLastWeekday(year, monthIndex, weekdayIndex);
+  const nth = occurrenceMap[occurence];
   return getNthWeekday(year, monthIndex, weekdayIndex, nth);
 }
 
