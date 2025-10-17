@@ -8,18 +8,25 @@
 <body>
   <h1>Project Days Calendar</h1>
 
+  <!-- Calendar navigation header -->
   <div id="calendar-header">
     <button id="prev">Previous</button>
-    <button id="today">Today</button> <!-- Added Today button -->
-    <span id="monthYear"></span>
+    <button id="today">Today</button> <!-- Today button -->
+    <span id="monthYear" aria-live="polite"></span> <!-- Updates current month/year -->
     <button id="next">Next</button>
   </div>
 
+  <!-- Calendar container with ARIA role -->
   <div id="calendar" role="grid" aria-label="Monthly calendar view"></div>
 
+  <!-- Month and year selection -->
+  <label for="monthSelect">Select month:</label>
   <select id="monthSelect"></select>
+
+  <label for="yearSelect">Select year:</label>
   <select id="yearSelect"></select>
 
+  <!-- Script module -->
   <script type="module" src="web.mjs"></script>
 </body>
 </html>
