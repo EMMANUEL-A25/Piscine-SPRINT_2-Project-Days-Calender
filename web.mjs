@@ -5,7 +5,8 @@ import commemorative from "./days.json" with { type: "json" };
 // Wait until DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
 
-  const monthNames = Object.keys(monthMap);// using monthMap for consistent month order
+  const monthNames = Object.keys(monthMap); // using monthMap for consistent month order
+
   // Grab references to key HTML elements
   const calendarContainer = document.getElementById("calendar");
   const monthYearLabel = document.getElementById("monthYear");
@@ -14,8 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const todayBtn = document.getElementById("today");
   const monthSelect = document.getElementById("monthSelect");
   const yearSelect = document.getElementById("yearSelect");
-
- 
 
   // Current date for initialization
   let now = new Date();
@@ -74,8 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
+    headRow.setAttribute("role", "row"); // ARIA row role for header
+
+    // Create column headers with ARIA roles
     ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d => {
       const th = document.createElement("th");
+      th.scope = "col";
+      th.setAttribute("role", "columnheader"); // ARIA column header
       th.textContent = d;
       th.style.border = "1px solid #333";
       th.style.width = "50px";
@@ -94,8 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     while (day <= daysInMonth) {
       const tr = document.createElement("tr");
+      tr.setAttribute("role", "row"); // ARIA row role
+
       for (let col = 0; col < 7; col++) {
         const td = document.createElement("td");
+
+        // Mark each cell as part of grid
+        td.setAttribute("role", "gridcell"); // ARIA gridcell
 
         // Rectangle box styling
         td.style.border = "1px solid #333";
@@ -116,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const isToday = date.getTime() === today.getTime();
           if (isToday) {
-            td.style.outline = "2px solid #1976d2";
+            td.style.outline = "2px solid #1976d2"; // highlight today
             td.style.backgroundColor = "#e3f2fd";
           }
 
@@ -126,16 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isToday) {
               td.style.boxShadow = "inset 0 0 0 2px #ffb300"; 
             } else {
-              td.style.backgroundColor = "#ffecb3";
+              td.style.backgroundColor = "#ffecb3"; // highlight event
             }
             td.style.cursor = "pointer";
             td.title = events.map(e => e.name).join(", ");
             td.addEventListener("click", () => window.open(events[0].descriptionURL, "_blank"));
 
+            // Display day and event names
             td.innerHTML = `<div>${day}</div>` +
                            events.map(e => `<div>${e.name}</div>`).join("");
           } else {
-            td.textContent = day;
+            td.textContent = day; // normal day
           }
 
           day++;
